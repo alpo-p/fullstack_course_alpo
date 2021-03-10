@@ -41,17 +41,22 @@ const App = () => {
 
     persons
       .map(person => person.name)  
-        .includes(personObject.name) 
-          ? changeNumber()
-          : peopleService
-              .create(personObject)
-              .then(returnedPerson => {
-                setPersons(persons.concat(returnedPerson))
-                setNewName('')
-                setNewNumber('')}) 
-                setError(false)
-                setNotificationMsg(`Added ${personObject.name}`)
-                setTimeout(() => setNotificationMsg(null), 2000)
+      .includes(personObject.name) 
+        ? changeNumber()
+        : peopleService.create(personObject)
+          .then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setError(false)
+            setNotificationMsg(`Added ${personObject.name}`)
+            setTimeout(() => setNotificationMsg(null), 2000)
+          })
+          .catch(error => {
+            setError(true)
+            setNotificationMsg(error)
+            setTimeout(() => setNotificationMsg(null), 2000)
+          })
   }
 
   const handleNameChange = event => setNewName(event.target.value)
@@ -67,7 +72,8 @@ const App = () => {
           setPersons(persons.filter(n => n.id !== person.id))
           setError(false)
           setNotificationMsg(`Deleted ${person.name}`)
-          setTimeout(() => setNotificationMsg(null), 2000)})
+          setTimeout(() => setNotificationMsg(null), 2000)
+        })
         .catch(error => {
           setError(true)
           setNotificationMsg(`Information of ${person.name} has already been removed from server`)
